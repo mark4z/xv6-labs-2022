@@ -6,8 +6,10 @@
 
 tasks:
   - init: |
-       sudo apt-get update && sudo apt-get install -y git build-essential gdb-multiarch qemu-system-misc gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
+       sudo apt-get update
+       sudo apt-get install -y git build-essential gdb-multiarch qemu-system-misc gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
   - command: |
+      pip install compiledb
       make clean
 
 
