@@ -1,6 +1,6 @@
 [
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-c",
@@ -11,7 +11,7 @@
   "file": "kernel/entry.S"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -40,7 +40,7 @@
   "file": "kernel/kalloc.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -69,7 +69,7 @@
   "file": "kernel/string.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -98,7 +98,7 @@
   "file": "kernel/main.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -127,7 +127,7 @@
   "file": "kernel/vm.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -156,7 +156,7 @@
   "file": "kernel/proc.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-c",
@@ -167,7 +167,7 @@
   "file": "kernel/swtch.S"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-c",
@@ -178,7 +178,7 @@
   "file": "kernel/trampoline.S"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -207,7 +207,7 @@
   "file": "kernel/trap.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -236,7 +236,7 @@
   "file": "kernel/syscall.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -265,7 +265,7 @@
   "file": "kernel/sysproc.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -294,7 +294,7 @@
   "file": "kernel/bio.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -323,7 +323,7 @@
   "file": "kernel/fs.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -352,7 +352,7 @@
   "file": "kernel/log.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -381,7 +381,7 @@
   "file": "kernel/sleeplock.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -410,7 +410,7 @@
   "file": "kernel/file.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -439,7 +439,7 @@
   "file": "kernel/pipe.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -468,7 +468,7 @@
   "file": "kernel/exec.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -497,7 +497,7 @@
   "file": "kernel/sysfile.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-c",
@@ -508,7 +508,7 @@
   "file": "kernel/kernelvec.S"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -537,7 +537,7 @@
   "file": "kernel/plic.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -566,7 +566,7 @@
   "file": "kernel/virtio_disk.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -595,7 +595,7 @@
   "file": "kernel/start.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -624,7 +624,7 @@
   "file": "kernel/console.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -653,7 +653,7 @@
   "file": "kernel/printf.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -682,7 +682,7 @@
   "file": "kernel/uart.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -711,7 +711,7 @@
   "file": "kernel/spinlock.c"
  },
  {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
   "arguments": [
    "riscv64-unknown-elf-gcc",
    "-Wall",
@@ -742,687 +742,5 @@
    "user/initcode.o"
   ],
   "file": "user/initcode.S"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "gcc",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-Werror",
-   "-Wall",
-   "-I.",
-   "-o",
-   "mkfs/mkfs",
-   "mkfs/mkfs.c"
-  ],
-  "file": "mkfs/mkfs.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/cat.o",
-   "user/cat.c"
-  ],
-  "file": "user/cat.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/ulib.o",
-   "user/ulib.c"
-  ],
-  "file": "user/ulib.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/usys.o",
-   "user/usys.S"
-  ],
-  "file": "user/usys.S"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/printf.o",
-   "user/printf.c"
-  ],
-  "file": "user/printf.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/umalloc.o",
-   "user/umalloc.c"
-  ],
-  "file": "user/umalloc.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/echo.o",
-   "user/echo.c"
-  ],
-  "file": "user/echo.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/forktest.o",
-   "user/forktest.c"
-  ],
-  "file": "user/forktest.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/grep.o",
-   "user/grep.c"
-  ],
-  "file": "user/grep.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/init.o",
-   "user/init.c"
-  ],
-  "file": "user/init.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/kill.o",
-   "user/kill.c"
-  ],
-  "file": "user/kill.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/ln.o",
-   "user/ln.c"
-  ],
-  "file": "user/ln.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/ls.o",
-   "user/ls.c"
-  ],
-  "file": "user/ls.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/mkdir.o",
-   "user/mkdir.c"
-  ],
-  "file": "user/mkdir.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/rm.o",
-   "user/rm.c"
-  ],
-  "file": "user/rm.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/sh.o",
-   "user/sh.c"
-  ],
-  "file": "user/sh.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/stressfs.o",
-   "user/stressfs.c"
-  ],
-  "file": "user/stressfs.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/usertests.o",
-   "user/usertests.c"
-  ],
-  "file": "user/usertests.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/grind.o",
-   "user/grind.c"
-  ],
-  "file": "user/grind.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/wc.o",
-   "user/wc.c"
-  ],
-  "file": "user/wc.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/zombie.o",
-   "user/zombie.c"
-  ],
-  "file": "user/zombie.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/sleep.o",
-   "user/sleep.c"
-  ],
-  "file": "user/sleep.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/pingpong.o",
-   "user/pingpong.c"
-  ],
-  "file": "user/pingpong.c"
- },
- {
-  "directory": "/home/mark4z/CLionProjects/xv6-labs-2022",
-  "arguments": [
-   "riscv64-unknown-elf-gcc",
-   "-Wall",
-   "-Werror",
-   "-O",
-   "-fno-omit-frame-pointer",
-   "-ggdb",
-   "-gdwarf-2",
-   "-DSOL_UTIL",
-   "-DLAB_UTIL",
-   "-MD",
-   "-mcmodel=medany",
-   "-ffreestanding",
-   "-fno-common",
-   "-nostdlib",
-   "-mno-relax",
-   "-I.",
-   "-fno-stack-protector",
-   "-fno-pie",
-   "-no-pie",
-   "-c",
-   "-o",
-   "user/primes.o",
-   "user/primes.c"
-  ],
-  "file": "user/primes.c"
  }
 ]
