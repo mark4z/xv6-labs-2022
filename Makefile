@@ -191,6 +191,7 @@ UPROGS=\
 	$U/_sleep\
 	$U/_pingpong\
 	$U/_primes\
+	$U/_find\
 
 
 
@@ -409,5 +410,7 @@ myapi.key:
 		false; \
 	fi;
 
+gdb-debug:
+	riscv64-unknown-elf-gdb
 
-.PHONY: handin tarball tarball-pref clean grade handin-check
+.PHONY: handin tarball tarball-pref clean grade handin-check gdb-debug
