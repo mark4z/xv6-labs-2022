@@ -3,7 +3,7 @@
 #include "kernel/fs.h"
 #include "user/user.h"
 
-void find(char *path, int level) {
+void find(char *path) {
     int fd;
     struct stat st;
     struct dirent de;
@@ -32,7 +32,6 @@ void find(char *path, int level) {
             strcpy(buf, path);
             p = buf + strlen(buf);
             *p++ = '/';
-            fprintf(1, "%d d%s-%s\n", level, buf, &buf);
 
             while ((read(fd, &de, sizeof de)) == sizeof de) {
                 if (de.inum == 0) {
@@ -48,8 +47,10 @@ void find(char *path, int level) {
                 }
                 memmove(p, de.name, strlen(de.name));
                 p[strlen(de.name)] = 0;
-                find(buf, level + 1);
-                p -= strlen(de.name);
+                if (strcmp(de.name, ".") != 0 && strcmp(de.name, "..") != 0) {
+                    find(buf);
+                }
+                *p = '\0';
             }
             break;
     }
@@ -62,7 +63,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     for (int i = 1; i < argc; ++i) {
-        find(argv[i], 0);
+        find(argv[i]);
     }
     exit(0);
 }
