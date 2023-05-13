@@ -30,7 +30,7 @@ void find(char *path, char *file) {
         fprintf(2, "path not exists.\n");
         return;
     }
-    if (stat(path, &st) < 0) {
+    if (fstat(fd, &st) < 0) {
         fprintf(2, "path can not stat.\n");
         close(fd);
         return;
@@ -54,22 +54,17 @@ void find(char *path, char *file) {
             *p++ = '/';
 
             while ((read(fd, &de, sizeof de)) == sizeof de) {
-                if (de.inum == 0) {
+                if (de.inum == 0 || strcmp(de.name, ".") == 0 || strcmp(de.name, "..") == 0) {
                     continue;
                 }
+                memmove(p, de.name, strlen(de.name));
+                p[strlen(de.name)] = 0;
+
                 if (stat(buf, &st) < 0) {
                     fprintf(2, "can not stat %s\n", buf);
                     continue;
                 }
-                if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
-                    fprintf(2, "path too long\n");
-                    break;
-                }
-                memmove(p, de.name, strlen(de.name));
-                p[strlen(de.name)] = 0;
-                if (strcmp(de.name, ".") != 0 && strcmp(de.name, "..") != 0) {
-                    find(buf, file);
-                }
+                find(buf, file);
                 *p = '\0';
             }
             break;
