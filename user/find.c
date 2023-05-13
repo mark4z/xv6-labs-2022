@@ -3,11 +3,28 @@
 #include "kernel/fs.h"
 #include "user/user.h"
 
-void find(char *path) {
+char *
+fmtname(char *path) {
+    static char buf[DIRSIZ + 1];
+    char *p;
+
+    // Find first character after last slash.
+    for (p = path + strlen(path); p >= path && *p != '/'; p--);
+    p++;
+
+    // Return blank-padded name.
+    if (strlen(p) >= DIRSIZ)
+        return p;
+    memmove(buf, p, strlen(p));
+    buf[strlen(p)] = 0;
+    return buf;
+}
+
+void find(char *path, char *file) {
     int fd;
     struct stat st;
     struct dirent de;
-    char buf[1024], *p;
+    char buf[512], *p;
 
     if ((fd = open(path, 0)) < 0) {
         fprintf(2, "path not exists.\n");
@@ -22,7 +39,10 @@ void find(char *path) {
         case T_DEVICE:
             break;
         case T_FILE:
-            fprintf(1, "%s\n", path);
+            char *fileName = fmtname(path);
+            if (strcmp(fileName, file) == 0) {
+                fprintf(1, "%s\n", path);
+            }
             break;
         case T_DIR:
             if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
@@ -48,7 +68,7 @@ void find(char *path) {
                 memmove(p, de.name, strlen(de.name));
                 p[strlen(de.name)] = 0;
                 if (strcmp(de.name, ".") != 0 && strcmp(de.name, "..") != 0) {
-                    find(buf);
+                    find(buf, file);
                 }
                 *p = '\0';
             }
@@ -58,13 +78,11 @@ void find(char *path) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        fprintf(2, "input one folder at lease pls.\n");
+    if (argc != 3) {
+        fprintf(2, "find [path] [fileName] etc.\n");
         exit(1);
     }
-    for (int i = 1; i < argc; ++i) {
-        find(argv[i]);
-    }
+    find(argv[1], argv[2]);
     exit(0);
 }
 
