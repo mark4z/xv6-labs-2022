@@ -95,6 +95,6 @@ sys_trace(void) {
     int mask;
     argint(0, &mask);
     struct proc *p = myproc();
-    p->trapframe->a6 = mask;
+    p->trace = mask;
     return 0;
 }
