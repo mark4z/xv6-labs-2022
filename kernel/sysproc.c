@@ -94,6 +94,7 @@ uint64
 sys_trace(void) {
     int mask;
     argint(0, &mask);
-    printf("mask: %d\n", mask);
+    struct proc *p = myproc();
+    p->trapframe->a6 = mask;
     return 0;
 }

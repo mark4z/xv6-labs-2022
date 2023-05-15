@@ -302,7 +302,7 @@ fork(void)
   // Cause fork to return 0 in the child.
   np->trapframe->a0 = 0;
 
-  np->trapframe->a1 = p->trapframe->a0;
+  np->trapframe->a6 = p->trapframe->a6;
 
   // increment reference counts on open file descriptors.
   for(i = 0; i < NOFILE; i++)
