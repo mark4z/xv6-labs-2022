@@ -169,11 +169,10 @@ syscall(void)
     // and store its return value in p->trapframe->a0
     p->trapframe->a0 = syscalls[num]();
     //sys_trace
-    int mask;
-    argint(0,&mask);
-    if ((mask >> num) & 1){
-        printf("%d:%d: syscall %s -> %d\n", mask, p->pid, syscallnames[num], p->trapframe->a0);
-    }
+      int mask = p->trapframe->a6;
+      if (mask != 84215045 && mask >> num & 1) {
+          printf("%d:%d: syscall %s -> %d\n", mask, p->pid, syscallnames[num], p->trapframe->a0);
+      }
   } else {
     printf("%d %s: unknown sys call %d\n",
             p->pid, p->name, num);
