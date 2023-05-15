@@ -193,7 +193,7 @@ UPROGS=\
 	$U/_primes\
 	$U/_find\
 	$U/_xargs\
-
+	$U/_trace\
 
 
 
@@ -413,5 +413,8 @@ myapi.key:
 
 gdb-debug:
 	riscv64-unknown-elf-gdb
+
+all:
+	compiledb make
 
 .PHONY: handin tarball tarball-pref clean grade handin-check gdb-debug
