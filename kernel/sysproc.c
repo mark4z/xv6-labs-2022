@@ -78,14 +78,20 @@ sys_pgaccess(void)
   struct proc* p= myproc();
   uint64 base;
   int len;
-  int mask = 0;
+  uint64 mask;
   argaddr(0, &base);
   argint(1, &len);
-  printf("sys_pgaccess %p %d\n", base, len);
+  argaddr(2, &mask);
+  int res = 0;
 
-  char src = mask;
-  copyout(p->pagetable, 0, &src, sizeof src);
-  return 0;
+for (int i = 1; i <= len; ++i) {
+    pte_t *pte = walk(p->pagetable, base+(i*PGSIZE), 0);
+    if((*pte & PTE_V) && (*pte & PTE_A)){
+        res |= 1 << (i);
+        *pte = *pte | 0L << 6 | PTE_V;
+    }
+}
+  return copyout(p->pagetable, mask, (char *)&res, sizeof res);
 }
 #endif
 
