@@ -75,6 +75,16 @@ int
 sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
+  struct proc* p= myproc();
+  uint64 base;
+  int len;
+  int mask = 0;
+  argaddr(0, &base);
+  argint(1, &len);
+  printf("sys_pgaccess %p %d\n", base, len);
+
+  char src = mask;
+  copyout(p->pagetable, 0, &src, sizeof src);
   return 0;
 }
 #endif
@@ -100,3 +110,4 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
