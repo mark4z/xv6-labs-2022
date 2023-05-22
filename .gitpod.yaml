@@ -11,6 +11,7 @@ tasks:
   - command: |
       pip3 install compiledb
       make clean
+      echo add-auto-load-safe-path ./.gdbinit > ~/.gdbinit
 
 
 
