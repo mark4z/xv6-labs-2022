@@ -407,5 +407,10 @@ myapi.key:
 		false; \
 	fi;
 
+gdb-debug:
+	riscv64-unknown-elf-gdb
 
-.PHONY: handin tarball tarball-pref clean grade handin-check
+all:
+	compiledb make
+
+.PHONY: handin tarball tarball-pref clean grade handin-check gdb-debug all
