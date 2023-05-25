@@ -132,7 +132,7 @@ printfinit(void) {
 void
 backtrace(void) {
     uint64 fp = r_fp();
-    uint64 next_page = PGROUNDDOWN(fp) + PGSIZE;
+    uint64 next_page = PGROUNDUP(fp);
     do{
         printf("%p\n", *((uint64 *) (fp-8)));
         fp = *((uint64 *) (fp-16));
