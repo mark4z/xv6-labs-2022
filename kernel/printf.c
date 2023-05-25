@@ -131,6 +131,7 @@ printfinit(void) {
 
 void
 backtrace(void) {
+    printf("backtrace:\n");
     uint64 fp = r_fp();
     uint64 next_page = PGROUNDUP(fp);
     do{
