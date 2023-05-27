@@ -1395,5 +1395,34 @@
    "user/usys.S"
   ],
   "file": "user/usys.S"
+ },
+ {
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
+  "arguments": [
+   "riscv64-unknown-elf-gcc",
+   "-Wall",
+   "-Werror",
+   "-O",
+   "-fno-omit-frame-pointer",
+   "-ggdb",
+   "-gdwarf-2",
+   "-DSOL_TRAPS",
+   "-DLAB_TRAPS",
+   "-MD",
+   "-mcmodel=medany",
+   "-ffreestanding",
+   "-fno-common",
+   "-nostdlib",
+   "-mno-relax",
+   "-I.",
+   "-fno-stack-protector",
+   "-fno-pie",
+   "-no-pie",
+   "-c",
+   "-o",
+   "user/alarmtest.o",
+   "user/alarmtest.c"
+  ],
+  "file": "user/alarmtest.c"
  }
 ]
