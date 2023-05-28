@@ -148,7 +148,8 @@ found:
 
     p->interval = -1;
     p->handler = -1;
-    p->ticks = 0;\
+    p->ticks = 0;
+    p->waittingreturn = 0;
   // Allocate a trapframe page.
     if ((p->alarmtrapframe = (struct trapframe *) kalloc()) == 0) {
         freeproc(p);
@@ -179,7 +180,10 @@ freeproc(struct proc *p)
   p->xstate = 0;
   p->state = UNUSED;
 
-  p->interval = -1;
+    p->interval = -1;
+    p->handler = -1;
+    p->ticks = 0;
+    p->waittingreturn = 0;
     if(p->alarmtrapframe)
         kfree((void*)p->alarmtrapframe);
     p->alarmtrapframe = 0;
@@ -697,19 +701,21 @@ procdump(void)
 }
 
 int sys_sigalarm(void) {
-    int ticks;
+    int interval;
     uint64 handler;
-    argint(0, &ticks);
+    argint(0, &interval);
     argaddr(1, &handler);
+
     struct proc *p = myproc();
-    p->interval = ticks;
+    p->interval = interval;
     p->handler = handler;
     return 0;
 }
 
 
 int sys_sigreturn(void) {
-//    struct proc *p = myproc();
-//    p->trapframe = p->alarmtrapframe;
-    return 0;
+    struct proc *p = myproc();
+    *p->trapframe = *p->alarmtrapframe;
+    p->waittingreturn = 0;
+    return (int) p->trapframe->a0;
 }
