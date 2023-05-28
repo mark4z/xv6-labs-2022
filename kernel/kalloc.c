@@ -9,7 +9,7 @@
 #include "riscv.h"
 #include "defs.h"
 
-void freerange(void *pa_start, void *pa_end);
+uint64 freerange(void *pa_start, void *pa_end);
 
 extern char end[]; // first address after kernel.
                    // defined by kernel.ld.
@@ -23,20 +23,28 @@ struct {
   struct run *freelist;
 } kmem;
 
+uint64 *pacnt;
+
 void
 kinit()
 {
   initlock(&kmem.lock, "kmem");
-  freerange(end, (void*)PHYSTOP);
+  // how to new []
+  uint64 panum = freerange(end, (void*)PHYSTOP);
+  pacnt = kalloc();
+  pacnt = uint64 []
 }
 
-void
-freerange(void *pa_start, void *pa_end)
-{
-  char *p;
-  p = (char*)PGROUNDUP((uint64)pa_start);
-  for(; p + PGSIZE <= (char*)pa_end; p += PGSIZE)
-    kfree(p);
+uint64
+freerange(void *pa_start, void *pa_end) {
+    uint64 cnt = 0;
+    char *p;
+    p = (char *) PGROUNDUP((uint64) pa_start);
+    for (; p + PGSIZE <= (char *) pa_end; p += PGSIZE) {
+        kfree(p);
+        cnt++;
+    }
+    return cnt;
 }
 
 // Free the page of physical memory pointed at by pa,

@@ -681,3 +681,40 @@ procdump(void)
     printf("\n");
   }
 }
+
+void cow() {
+    //cow here
+    printf("oh cow\n");
+    //todo how to deal with old parent
+    uint64 va = r_stval();
+    char *mem;
+    uint64 pa;
+    pte_t *pte;
+    uint flags;
+
+    struct proc *p = myproc();
+    if ((pte = walk(p->pagetable, va, 0)) == 0)
+        panic("cow: pte should exist");
+    if ((*pte & PTE_V) == 0) {
+        panic("cow: page not present");
+    }
+    if ((*pte & PTE_C) == 0) {
+        panic("cow: page fault");
+    }
+
+    pa = PTE2PA(*pte);
+    flags = PTE_FLAGS(*pte);
+    // clear cow bit && add write bit
+    flags = (flags & ~PTE_C) | PTE_W;
+    if ((mem = kalloc()) == 0) {
+        panic("cow kalloc");
+    }
+    memmove(mem, (char *) pa, PGSIZE);
+    //unmap first
+    uvmunmap(p->pagetable, PGROUNDDOWN(va), 1, 0);
+    //remap real pa
+    if (mappages(p->pagetable, va, PGSIZE, (uint64) mem, flags) != 0) {
+        kfree(mem);
+        panic("cow mappages error");
+    }
+}
