@@ -23,14 +23,14 @@ struct {
   struct run *freelist;
 } kmem;
 
-uint8 *pacnt[32734];
+int pacnt[32734];
 
 void
 kinit()
 {
   initlock(&kmem.lock, "kmem");
   // how to new []
-  uint64 panum = freerange(end, (void*)PHYSTOP);
+  freerange(end, (void*)PHYSTOP);
 }
 
 uint64
@@ -57,7 +57,8 @@ kfree(void *pa)
   if(((uint64)pa % PGSIZE) != 0 || (char*)pa < end || (uint64)pa >= PHYSTOP)
     panic("kfree");
   if ((pacnt[((uint64)pa - PGROUNDUP((uint64) end)) / PGSIZE]) > 1){
-
+      pacnt[((uint64)pa - PGROUNDUP((uint64) end)) / PGSIZE]--;
+      return;
   }
 
   // Fill with junk to catch dangling refs.
