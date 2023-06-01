@@ -11,19 +11,17 @@
 
 void freerange(void *pa_start, void *pa_end);
 
-void * kalloc_inner(void);
-
 extern char end[]; // first address after kernel.
-                   // defined by kernel.ld.
+// defined by kernel.ld.
 
 struct run {
-  struct run *next;
+    struct run *next;
 };
 
 struct {
-  struct spinlock lock;
-  struct run *freelist;
-  int pagecnt[32734];
+    struct spinlock lock;
+    struct run *freelist;
+    int page_cnt[(PHYSTOP - KERNBASE) / PGSIZE];
 } kmem;
 
 
@@ -34,13 +32,17 @@ kinit() {
     freerange(end, (void *) PHYSTOP);
 }
 
+void kalloc_incr(void *pa) {
+    int idx = (int) (((uint64) pa - KERNBASE) / PGSIZE);
+    kmem.page_cnt[idx]++;
+}
+
 
 void
-freerange(void *pa_start, void *pa_end)
-{
+freerange(void *pa_start, void *pa_end) {
     char *p;
-    p = (char*)PGROUNDUP((uint64)pa_start);
-    for(; p + PGSIZE <= (char*)pa_end; p += PGSIZE)
+    p = (char *) PGROUNDUP((uint64) pa_start);
+    for (; p + PGSIZE <= (char *) pa_end; p += PGSIZE)
         kfree(p);
 }
 
@@ -56,9 +58,9 @@ kfree(void *pa) {
         panic("kfree");
 
     //if is PTE_C
-    int idx = (uint64) pa / PGSIZE;
-    if (kmem.pagecnt[idx] > 1) {
-        kmem.pagecnt[idx]--;
+    int idx = (int) (((uint64) pa - KERNBASE) / PGSIZE);
+    if (kmem.page_cnt[idx] > 1) {
+        kmem.page_cnt[idx]--;
         return;
     }
 
@@ -77,27 +79,17 @@ kfree(void *pa) {
 // Returns a pointer that the kernel can use.
 // Returns 0 if the memory cannot be allocated.
 void *
-kalloc_inner(void)
-{
+kalloc(void) {
     struct run *r;
 
     acquire(&kmem.lock);
     r = kmem.freelist;
-    if(r)
+    if (r)
         kmem.freelist = r->next;
     release(&kmem.lock);
 
-    if(r)
-        memset((char*)r, 5, PGSIZE); // fill with junk
-    //if is PTE_C
-    kmem.pagecnt[(uint64) r / PGSIZE]++;
-    return (void*)r;
-}
-
-void *
-kalloc(void)
-{
-    void * r = kalloc_inner();
-    kmem.pagecnt[(uint64) r / PGSIZE]++;
-    return r;
+    if (r)
+        memset((char *) r, 5, PGSIZE); // fill with junk
+    kalloc_incr(r);
+    return (void *) r;
 }
