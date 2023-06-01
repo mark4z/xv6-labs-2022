@@ -689,13 +689,17 @@ int cow(pagetable_t pagetable, uint64 va) {
     pte_t *pte;
     uint flags;
 
+    if (va >= MAXVA || va < PGSIZE){
+        return -1;
+    }
+
     if ((pte = walk(pagetable, va, 0)) == 0)
-        panic("cow: pte should exist");
+        return -1;
     if ((*pte & PTE_V) == 0) {
-        panic("cow: page not present");
+        return -1;
     }
     if ((*pte & PTE_C) == 0) {
-        return -1;
+        return -2;
     }
     pa = PTE2PA(*pte);
     flags = PTE_FLAGS(*pte);
