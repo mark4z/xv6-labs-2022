@@ -21,6 +21,7 @@ struct run {
 struct {
     struct spinlock lock;
     struct run *freelist;
+    struct spinlock cntlock;
     uint64 page_cnt[(PHYSTOP - KERNBASE) / PGSIZE];
 } kmem;
 
@@ -28,15 +29,18 @@ struct {
 void
 kinit() {
     initlock(&kmem.lock, "kmem");
+    initlock(&kmem.cntlock, "kmem cntlock");
     // how to new []
     freerange(end, (void *) PHYSTOP);
 }
 
 void kalloc_incr(void *pa) {
+    acquire(&kmem.cntlock);
     int idx = (int) (((uint64) pa - KERNBASE) / PGSIZE);
     if (idx >= 0){
         kmem.page_cnt[idx]++;
     }
+    release(&kmem.cntlock);
 }
 
 
@@ -60,15 +64,18 @@ kfree(void *pa) {
         panic("kfree");
 
     //if is PTE_C
+    acquire(&kmem.cntlock);
     if ((uint64) pa - KERNBASE > 0) {
         int idx = (int) (((uint64) pa - KERNBASE) / PGSIZE);
         if (idx >= 0 && kmem.page_cnt[idx] >= 1) {
             kmem.page_cnt[idx]--;
             if (kmem.page_cnt[idx] > 0){
+                release(&kmem.cntlock);
                 return;
             }
         }
     }
+    release(&kmem.cntlock);
 
     // Fill with junk to catch dangling refs.
     memset(pa, 1, PGSIZE);
