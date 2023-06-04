@@ -7,7 +7,6 @@
 
 	.globl thread_switch
 thread_switch:
-swtch:
         sd ra, 0(a1)
         sd sp, 8(a1)
         sd s0, 16(a1)

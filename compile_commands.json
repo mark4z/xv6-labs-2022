@@ -1424,5 +1424,34 @@
    "user/uthread_switch.S"
   ],
   "file": "user/uthread_switch.S"
+ },
+ {
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
+  "arguments": [
+   "riscv64-unknown-elf-gcc",
+   "-Wall",
+   "-Werror",
+   "-O",
+   "-fno-omit-frame-pointer",
+   "-ggdb",
+   "-gdwarf-2",
+   "-DSOL_THREAD",
+   "-DLAB_THREAD",
+   "-MD",
+   "-mcmodel=medany",
+   "-ffreestanding",
+   "-fno-common",
+   "-nostdlib",
+   "-mno-relax",
+   "-I.",
+   "-fno-stack-protector",
+   "-fno-pie",
+   "-no-pie",
+   "-c",
+   "-o",
+   "user/sof.o",
+   "user/sof.c"
+  ],
+  "file": "user/sof.c"
  }
 ]
