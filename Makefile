@@ -411,6 +411,6 @@ gdb-debug:
 	riscv64-unknown-elf-gdb
 
 all:
-	compiledb make
+	compiledb make qemu
 
 .PHONY: handin tarball tarball-pref clean grade handin-check gdb-debug all
