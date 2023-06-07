@@ -105,6 +105,7 @@ e1000_transmit(struct mbuf *m) {
     uint32 tail = regs[E1000_TDT];
     printf("tail is %d\n", tail);
     if (tail >= TX_RING_SIZE) {
+        printf("rx_ring it's full!\n");
         release(&e1000_lock);
         return -1;
     }
@@ -124,12 +125,12 @@ e1000_transmit(struct mbuf *m) {
 
     tx_tail.addr = (uint64) m->head;
     tx_tail.length = m->len;
-    tx_tail.cmd |= E1000_TXD_CMD_RS;
-    uint32 new_tail = (tail + 1) % TX_RING_SIZE;
+    tx_tail.cmd = E1000_TXD_CMD_EOP | E1000_TXD_CMD_RS;
 
+    uint32 new_tail = (tail + 1) % TX_RING_SIZE;
     regs[E1000_TDT] = new_tail;
     release(&e1000_lock);
-    printf("transmit finished: tail:%d\n", new_tail);
+    printf("transmit finished: tail:%d: %d\n", new_tail, tx_tail.cmd);
     return 0;
 }
 
