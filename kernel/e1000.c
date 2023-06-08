@@ -151,10 +151,8 @@ e1000_recv(void) {
 
         struct mbuf *m = rx_mbufs[tail];
         m->len = rx->length;
-        release(&e1000_rx_lock);
         net_rx(m);
 
-        acquire(&e1000_rx_lock);
         struct mbuf *empty_m = mbufalloc(0);
         rx->addr = (uint64)empty_m->head;
         rx->status = 0;
