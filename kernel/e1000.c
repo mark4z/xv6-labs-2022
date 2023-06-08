@@ -100,37 +100,33 @@ e1000_transmit(struct mbuf *m) {
     // the TX descriptor ring so that the e1000 sends it. Stash
     // a pointer so that it can be freed after sending.
     //
-    printf("\ntx in %d\n", m->len);
     acquire(&e1000_lock);
     uint32 tail = regs[E1000_TDT];
-    printf("tail is %d\n", tail);
     if (tail >= TX_RING_SIZE) {
-        printf("rx_ring it's full!\n");
         release(&e1000_lock);
         return -1;
     }
-    struct tx_desc tx_tail = tx_ring[tail];
-    if (!(tx_tail.status & E1000_TXD_STAT_DD)) {
+    struct tx_desc *tx_tail = &tx_ring[tail];
+    if (!(tx_tail->status & E1000_TXD_STAT_DD)) {
         //not transmit finished
-        printf("tail not transmit finished\n");
         release(&e1000_lock);
         return -1;
     }
-    printf("start to transmit\n");
-    struct mbuf *no_used;
-    if ((no_used = tx_mbufs[tail]) > 0) {
-        mbuffree(no_used);
+    if (tx_mbufs[tail]) {
+        mbuffree(tx_mbufs[tail]);
+        tx_mbufs[tail] = 0;
     }
-    tx_mbufs[tail] = m;
 
-    tx_tail.addr = (uint64) m->head;
-    tx_tail.length = m->len;
-    tx_tail.cmd = E1000_TXD_CMD_EOP | E1000_TXD_CMD_RS;
+    tx_tail->addr = (uint64) m->head;
+    tx_tail->length = m->len;
+
+    tx_tail->cmd = E1000_TXD_CMD_EOP | E1000_TXD_CMD_RS;
+
+    tx_mbufs[tail] = m;
 
     uint32 new_tail = (tail + 1) % TX_RING_SIZE;
     regs[E1000_TDT] = new_tail;
     release(&e1000_lock);
-    printf("transmit finished: tail:%d: %d\n", new_tail, tx_tail.cmd);
     return 0;
 }
 
@@ -142,27 +138,24 @@ e1000_recv(void) {
     // Check for packets that have arrived from the e1000
     // Create and deliver an mbuf for each packet (using net_rx()).
     //
-    printf("recv\n");
-    acquire(&e1000_lock);
-    uint32 tail = regs[E1000_RDT];
-    tail = (tail + 1) % RX_RING_SIZE;
-    printf("tail is %d", tail);
-    struct rx_desc rx = rx_ring[tail];
-    if (!(rx.status & E1000_RXD_STAT_DD)) {
-        printf("tail not read finished\n");
-        release(&e1000_lock);
-        return;
-    }
+    while(1){
+        uint32 tail = regs[E1000_RDT];
+        tail = (tail + 1) % RX_RING_SIZE;
+        struct rx_desc *rx = &rx_ring[tail];
+        if (!(rx->status & E1000_RXD_STAT_DD)) {
+            return;
+        }
 
-    struct mbuf *m = rx_mbufs[tail];
-    m->len = rx.length;
-    net_rx(m);
-    struct mbuf *empty_m = mbufalloc(0);
-    m->head = (char *) &rx;
-    rx.status = 0;
-    rx_mbufs[tail] = empty_m;
-    regs[E1000_RDT] = tail;
-    release(&e1000_lock);
+        struct mbuf *m = rx_mbufs[tail];
+        m->len = rx->length;
+        net_rx(m);
+
+        struct mbuf *empty_m = mbufalloc(0);
+        rx->addr = (uint64)empty_m->head;
+        rx->status = 0;
+        rx_mbufs[tail] = empty_m;
+        regs[E1000_RDT] = tail;
+    }
 }
 
 void
