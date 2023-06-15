@@ -28,13 +28,21 @@ struct {
 void
 kinit() {
     uint64 start = PGROUNDUP((uint64) end);
-    uint64 avg = (PHYSTOP - start) / PGSIZE;
+    uint64 avg = (PHYSTOP - start) / PGSIZE / NCPU;
+    printf("%p %d %p %p\n", start, avg, start + avg * NCPU * PGSIZE, PHYSTOP);
 
     char *buf[6];
     for (int i = 0; i < NCPU; ++i) {
         snprintf((char *) buf, 6, "kmem-%d", i);
         initlock(&kmem[i].lock, (char *) buf);
-        freerange(end + (i * avg) * PGSIZE, (void *) PHYSTOP - (NCPU - 1 - i) * PGSIZE, i);
+        char *l = end + (i * avg) * PGSIZE;
+        char *r = (char *) l + avg * PGSIZE;
+        if (i == NCPU - 1) {
+            r = (char *) PHYSTOP;
+        }
+
+        printf("cpu %d: %p %p\n", i, l, r);
+        freerange(l, r, i);
     }
 }
 
@@ -88,10 +96,24 @@ kalloc(void) {
 
     acquire(&kmem[id].lock);
     r = kmem[id].freelist;
-    if (r)
+    if (r) {
         kmem[id].freelist = r->next;
-    release(&kmem[id].lock);
+        release(&kmem[id].lock);
+    } else {
+        release(&kmem[id].lock);
 
+        for (int i = 0; i < NCPU; ++i) {
+            acquire(&kmem[i].lock);
+            struct run *or = kmem[i].freelist;
+            if (or) {
+                r = or;
+                kmem[i].freelist = or->next;
+                release(&kmem[i].lock);
+                break;
+            }
+            release(&kmem[i].lock);
+        }
+    }
     if (r)
         memset((char *) r, 5, PGSIZE); // fill with junk
     return (void *) r;
