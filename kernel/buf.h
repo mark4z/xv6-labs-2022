@@ -10,3 +10,8 @@ struct buf {
   uchar data[BSIZE];
 };
 
+struct bucket_entry {
+    struct spinlock lock;
+    struct buf *buf[BUCKET_SIZE];
+};
+
