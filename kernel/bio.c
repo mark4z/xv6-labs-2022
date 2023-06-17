@@ -41,8 +41,6 @@ binit(void) {
         bucket = &bcache.bucket[i];
         snprintf((char *) name, 8, "kmem-%d", i);
         initlock(&bucket->lock, (char *) name);
-        bucket->head.prev = &bucket->head;
-        bucket->head.next = &bucket->head;
     }
 
     // Create linked list of buffers
@@ -50,8 +48,6 @@ binit(void) {
     for (b = bcache.buf; b < bcache.buf + NBUF; b++) {
         initsleeplock(&b->lock, "buffer");
         b->next = bucket->head.next;
-        b->prev = &bucket->head;
-        bucket->head.next->prev = b;
         bucket->head.next = b;
     }
 }
@@ -62,14 +58,17 @@ binit(void) {
 static struct buf *
 bget(uint dev, uint blockno) {
     struct buf *b;
+    struct buf *pre;
+    struct buf *found;
     uint idx = blockno % HASH;
     struct bucket_entry *bucket = &bcache.bucket[idx];
 
     acquire(&bucket->lock);
     // Is the block already cached?
-    for (b = bucket->head.next; b != &bucket->head; b = b->next) {
+    for (b = bucket->head.next; b; b = b->next) {
         if (b->dev == dev && b->blockno == blockno) {
             b->refcnt++;
+            b->ticks = ticks;
             release(&bucket->lock);
             acquiresleep(&b->lock);
             return b;
@@ -83,12 +82,12 @@ bget(uint dev, uint blockno) {
         struct bucket_entry *borrow_bucket = &bcache.bucket[i];
 
         acquire(&borrow_bucket->lock);
-        for (b = borrow_bucket->head.next; b != &borrow_bucket->head; b = b->next) {
+
+        pre = &borrow_bucket->head;
+        for (b = pre->next; b ; b = b->next) {
             if (b->refcnt == 0) {
-                b->next->prev = b->prev;
-                b->prev->next = b->next;
+                pre->next = b->next;
                 b->next = 0;
-                b->prev = 0;
 
                 b->dev = dev;
                 b->blockno = blockno;
@@ -99,17 +98,16 @@ bget(uint dev, uint blockno) {
                 acquire(&bucket->lock);
 
                 b->next = bucket->head.next;
-                b->prev = &bucket->head;
-                bucket->head.next->prev = b;
                 bucket->head.next = b;
 
                 release(&bucket->lock);
                 release(&bcache.lock);
 
                 acquiresleep(&b->lock);
-                printf("allocate: %p\n", b);
+//                printf("allocate: %p\n", b);
                 return b;
             }
+            pre = b;
         }
         release(&borrow_bucket->lock);
     }
