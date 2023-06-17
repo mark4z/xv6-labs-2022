@@ -15,3 +15,8 @@ struct bucket_entry {
     struct spinlock lock;
 };
 
+struct bucket_entry {
+    struct spinlock lock;
+    struct buf *buf[BUCKET_SIZE];
+};
+
