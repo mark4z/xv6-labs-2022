@@ -59,7 +59,6 @@ static struct buf *
 bget(uint dev, uint blockno) {
     struct buf *b;
     struct buf *pre;
-    struct buf *found;
     uint idx = blockno % HASH;
     struct bucket_entry *bucket = &bcache.bucket[idx];
 
