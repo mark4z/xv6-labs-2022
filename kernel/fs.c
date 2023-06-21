@@ -424,7 +424,7 @@ bmap(struct inode *ip, uint bn) {
         a = (uint *) bp->data;
 
         //build level_1
-        uint level_1 = bn;
+        uint level_1 = bn/NINDIRECT;
         if ((addr = a[level_1]) == 0) {
             addr = balloc(ip->dev);
             if (addr) {
@@ -434,19 +434,19 @@ bmap(struct inode *ip, uint bn) {
         }
         brelse(bp);
 
-//        bp = bread(ip->dev, addr);
-//        a = (uint *) bp->data;
-//
-//        //build level_2
-//        uint level_2 = bn % NINDIRECT;
-//        if ((addr = a[level_2]) == 0) {
-//            addr = balloc(ip->dev);
-//            if (addr) {
-//                a[level_2] = addr;
-//                log_write(bp);
-//            }
-//        }
-//        brelse(bp);
+        bp = bread(ip->dev, addr);
+        a = (uint *) bp->data;
+
+        //build level_2
+        uint level_2 = bn % NINDIRECT;
+        if ((addr = a[level_2]) == 0) {
+            addr = balloc(ip->dev);
+            if (addr) {
+                a[level_2] = addr;
+                log_write(bp);
+            }
+        }
+        brelse(bp);
         return addr;
     }
     panic("bmap: out of range");
@@ -457,8 +457,8 @@ bmap(struct inode *ip, uint bn) {
 void
 itrunc(struct inode *ip) {
     int i, j;
-    struct buf *bp;
-    uint *a;
+    struct buf *bp, *bp2;
+    uint *a, *a2;
 
     for (i = 0; i < NDIRECT; i++) {
         if (ip->addrs[i]) {
@@ -485,14 +485,14 @@ itrunc(struct inode *ip) {
         a = (uint *) bp->data;
         for (j = 0; j < NINDIRECT; j++) {
             if (a[j]) {
-//                bp2 = bread(ip->dev, a[j]);
-//                a2 = (uint *) bp2->data;
-//                for (int k = 0; k < NINDIRECT; ++k) {
-//                    if (a2[k]){
-//                        bfree(ip->dev, a2[k]);
-//                    }
-//                }
-//                brelse(bp2);
+                bp2 = bread(ip->dev, a[j]);
+                a2 = (uint *) bp2->data;
+                for (int k = 0; k < NINDIRECT; ++k) {
+                    if (a2[k]){
+                        bfree(ip->dev, a2[k]);
+                    }
+                }
+                brelse(bp2);
                 bfree(ip->dev, a[j]);
             }
         }
