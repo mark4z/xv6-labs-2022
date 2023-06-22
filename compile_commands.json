@@ -1366,5 +1366,34 @@
    "user/bigfile.c"
   ],
   "file": "user/bigfile.c"
+ },
+ {
+  "directory": "/Users/mark4zlv/CLionProjects/xv6-labs-2022",
+  "arguments": [
+   "riscv64-unknown-elf-gcc",
+   "-Wall",
+   "-Werror",
+   "-O",
+   "-fno-omit-frame-pointer",
+   "-ggdb",
+   "-gdwarf-2",
+   "-DSOL_FS",
+   "-DLAB_FS",
+   "-MD",
+   "-mcmodel=medany",
+   "-ffreestanding",
+   "-fno-common",
+   "-nostdlib",
+   "-mno-relax",
+   "-I.",
+   "-fno-stack-protector",
+   "-fno-pie",
+   "-no-pie",
+   "-c",
+   "-o",
+   "user/symlinktest.o",
+   "user/symlinktest.c"
+  ],
+  "file": "user/symlinktest.c"
  }
 ]
