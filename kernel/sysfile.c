@@ -290,6 +290,8 @@ create(char *path, short type, short major, short minor) {
     return 0;
 }
 
+struct inode *open_link(struct inode *link, uint deepth);
+
 uint64
 sys_open(void) {
     char path[MAXPATH];
@@ -316,10 +318,18 @@ sys_open(void) {
             return -1;
         }
         ilock(ip);
-        if (ip->type == T_DIR && omode != O_RDONLY) {
+        if ((ip->type == T_DIR) && omode != O_RDONLY) {
             iunlockput(ip);
             end_op();
             return -1;
+        }
+        if ((ip->type == T_SYMLINK) && (omode & O_NOFOLLOW) != O_NOFOLLOW) {
+            struct inode *target = open_link(ip, 0);
+            if (target == 0) {
+                end_op();
+                return -1;
+            }
+            ip = target;
         }
     }
 
@@ -356,6 +366,36 @@ sys_open(void) {
     end_op();
 
     return fd;
+}
+
+struct inode *open_link(struct inode *link, uint deepth) {
+    struct inode *ip;
+    if (link->type != T_SYMLINK) {
+        goto bad;
+    }
+    if (deepth > 10) {
+        printf("too depth\n");
+        goto bad;
+    }
+    char path[MAXPATH];
+    if (readi(link, 0, (uint64) &path, 0, MAXPATH) == 0) {
+        goto bad;
+    }
+    iunlockput(link);
+
+    if ((ip = namei(path)) == 0) {
+        printf("path not exists :%s\n", path);
+        return 0;
+    }
+    ilock(ip);
+    if (ip->type != T_SYMLINK) {
+        return ip;
+    }
+    return open_link(ip, deepth + 1);
+
+    bad:
+    iunlockput(link);
+    return 0;
 }
 
 uint64
@@ -502,12 +542,10 @@ sys_symlink(void) {
         end_op();
         return -1;
     }
-    for (int i = 0; i < MAXPATH && (i < 1 || target[i - 1] != '\0'); ++i) {
-        if (writei(ip, 0, (uint64) &target[i], 0, 1) != 1) {
-            iunlockput(ip);
-            end_op();
-            return -1;
-        }
+    if (writei(ip, 0, (uint64) &target, 0, MAXPATH) <= 0) {
+        iunlockput(ip);
+        end_op();
+        return -1;
     }
     iunlockput(ip);
     end_op();

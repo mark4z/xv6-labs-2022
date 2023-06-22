@@ -81,8 +81,10 @@ testsymlink(void) {
     if (fd2 < 0)
         fail("failed to open b");
     read(fd2, &c, 1);
-    if (c != 'a')
+    if (c != 'a') {
+        printf("%c\n", c);
         fail("failed to read bytes from b");
+    }
 
     unlink("/testsymlink/a");
     if (open("/testsymlink/b", O_RDWR) >= 0)
@@ -102,7 +104,11 @@ testsymlink(void) {
 
     r = symlink("/testsymlink/2", "/testsymlink/1");
     if (r) fail("Failed to link 1->2");
+    printf("start\n");
     r = symlink("/testsymlink/3", "/testsymlink/2");
+//    if (stat_slink("/testsymlink/2", &st) == 0){
+//        printf("%d\n",&st.type);
+//    }
     if (r) fail("Failed to link 2->3");
     r = symlink("/testsymlink/4", "/testsymlink/3");
     if (r) fail("Failed to link 3->4");
@@ -118,6 +124,7 @@ testsymlink(void) {
     c = '#';
     r = write(fd2, &c, 1);
     if (r != 1) fail("Failed to write to 1\n");
+
     r = read(fd1, &c2, 1);
     if (r != 1) fail("Failed to read from 4\n");
     if (c != c2)
