@@ -504,7 +504,7 @@ sys_mmap(void) {
 
     filedup(f);
 
-    int pte_perm = PTE_U;
+    int pte_perm = PTE_U | PTE_L;
     if (prot & PROT_READ) {
         pte_perm |= PTE_R;
     }
@@ -513,7 +513,7 @@ sys_mmap(void) {
     }
     // new addr
     int addr = p->sz;
-    p->sz += 1;
+    p->sz += len;
 
     //map
     if (mappages(p->pagetable, addr, PGSIZE, 0, pte_perm) < 0) {
@@ -536,5 +536,5 @@ sys_mmap(void) {
 
 uint64
 sys_munmap(void) {
-    return -1;
+    return 0;
 }
