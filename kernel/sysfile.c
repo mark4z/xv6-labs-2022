@@ -533,6 +533,7 @@ uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
 }
 
 int real_mmap(uint64 addr) {
+    printf("real_mmap: %p\n", addr);
     struct proc *p = myproc();
     if (addr > p->sz) {
         printf("addr exceed\n");
@@ -551,7 +552,7 @@ int real_mmap(uint64 addr) {
             if (vma->prot & PROT_WRITE) {
                 pte_perm |= PTE_W;
             }
-            if (uvmalloc(p->pagetable, addr, addr + vma->len, pte_perm) == 0) {
+            if (uvmalloc(p->pagetable, vma->addr, vma->addr + vma->len, pte_perm) == 0) {
                 panic("vma uvvmalloc fail\n");
             }
 
@@ -572,13 +573,8 @@ int real_mmap(uint64 addr) {
     return 0;
 }
 
-uint64
-sys_munmap(void) {
-    uint64 addr;
-    int len;
-    argaddr(0, &addr);
-    argint(1, &len);
-
+int
+munmap(uint64 addr, int len){
     struct proc *p = myproc();
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
@@ -610,4 +606,13 @@ sys_munmap(void) {
         }
     }
     return 0;
+}
+
+uint64
+sys_munmap(void) {
+    uint64 addr;
+    int len;
+    argaddr(0, &addr);
+    argint(1, &len);
+    return munmap(addr, len);
 }

@@ -289,7 +289,7 @@ fork(void) {
     for (i = 0; i < NOFILE; i++) {
         if (p->vma[i].ref > 0) {
             np->vma[i] = p->vma[i];
-            filedup(p->vma[i].fd);
+            np->vma[i].fd = filedup(np->vma[i].fd);
         }
     }
 
@@ -358,11 +358,8 @@ exit(int status) {
     }
     // Close vma
     for (int i = 0; i < NOFILE; ++i) {
-        if (p->vma[i].ref > 0){
-            p->vma[i].ref = 0;
-            fileclose(p->vma[i].fd);
-            p->vma[i].fd = 0;
-            uvmunmap(p->pagetable, p->vma[i].addr, p->vma[i].len, 1);
+        if (p->vma[i].ref > 0) {
+            munmap(p->vma[i].addr, p->vma[i].len);
         }
     }
 

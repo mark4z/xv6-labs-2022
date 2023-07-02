@@ -266,7 +266,6 @@ fork_test(void) {
     char *p2 = mmap(0, PGSIZE * 2, PROT_READ, MAP_SHARED, fd, 0);
     if (p2 == MAP_FAILED)
         err("mmap (5)");
-
     printf("read just 2nd page\n");
     // read just 2nd page.
     if (*(p1 + PGSIZE) != 'A')
@@ -276,12 +275,14 @@ fork_test(void) {
     if ((pid = fork()) < 0)
         err("fork");
     if (pid == 0) {
-        printf("fork success\n");
+        printf("fork sub success\n");
         _v1(p1);
+        printf("munmap\n");
         munmap(p1, PGSIZE); // just the first page
+        printf("munmap sub success\n");
         exit(0); // tell the parent that the mapping looks OK.
     }
-
+    printf("fork ?\n");
     int status = -1;
     wait(&status);
 
