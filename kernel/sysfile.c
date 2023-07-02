@@ -573,8 +573,8 @@ int real_mmap(uint64 addr) {
         panic("kalloc\n");
     }
     pte_t *pte = walk(p->pagetable, addr, 0);
-    *pte = PA2PTE(mem) | PTE_V | ~PTE_L;
-    printf("pte %p\n", *pte);
+    *pte = PTE_V | ~PTE_L;
+    printf("pte %p\n", PTE2PA(*pte));
 
     struct file *f = 0;
     int offset = 0;
@@ -592,7 +592,7 @@ int real_mmap(uint64 addr) {
 
     int r = 0;
     ilock(f->ip);
-    if ((r = readi(f->ip, 0, *pte, offset, PGSIZE)) != PGSIZE)
+    if ((r = readi(f->ip, 0, PTE2PA(*pte), offset, PGSIZE)) != PGSIZE)
         panic("readi");
     iunlock(f->ip);
     return 1;
