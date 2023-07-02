@@ -107,11 +107,9 @@ mmap_test(void) {
     // of the file to be mapped. the last argument is the starting
     // offset in the file.
     //
-    printf("start map\n");
     char *p = mmap(0, PGSIZE * 2, PROT_READ, MAP_PRIVATE, fd, 0);
     if (p == MAP_FAILED)
         err("mmap (1)");
-    printf("map success\n");
     _v1(p);
     printf("start munmap\n");
     if (munmap(p, PGSIZE * 2) == -1)
