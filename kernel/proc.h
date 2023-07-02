@@ -89,6 +89,8 @@ struct mmap {
     int flags;
     int prot;
     struct file *fd;
+    int offset;
+    int ref;
 };
 
 // Per-process state
@@ -115,5 +117,5 @@ struct proc {
     struct inode *cwd;           // Current directory
     char name[16];               // Process name (debugging)
 
-    struct mmap *vma[NOFILE];
+    struct mmap vma[NOFILE];
 };

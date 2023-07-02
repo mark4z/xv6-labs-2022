@@ -290,6 +290,10 @@ create(char *path, short type, short major, short minor) {
     return 0;
 }
 
+uint64 mmap();
+
+int uvvmalloc(pagetable_t pagetable, int oldsz, uint64 newsz, int perm);
+
 uint64
 sys_open(void) {
     char path[MAXPATH];
@@ -490,7 +494,6 @@ sys_pipe(void) {
 
 uint64
 sys_mmap(void) {
-    struct proc *p = myproc();
 
     int len, prot, flags, offset;
     struct file *f;
@@ -499,10 +502,13 @@ sys_mmap(void) {
     argint(2, &prot);
     argint(3, &flags);
     if (argfd(4, 0, &f) < 0)
-        return -1;
+        return 0xffffffffffffffff;
     argint(5, &offset);
+    return mmap(len, prot, flags, f, offset);
+}
 
-    filedup(f);
+uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
+    struct proc *p = myproc();
 
     int pte_perm = PTE_U | PTE_L;
     if (prot & PROT_READ) {
@@ -515,26 +521,98 @@ sys_mmap(void) {
     int addr = p->sz;
     p->sz += len;
 
-    //map
-    if (mappages(p->pagetable, addr, PGSIZE, 0, pte_perm) < 0) {
-        return -1;
+    if (uvvmalloc(p->pagetable, addr, p->sz, pte_perm) < 0) {
+        return 0xffffffffffffffff;
     }
-    struct mmap mmap;
-    mmap.addr = addr;
-    mmap.len = len;
-    mmap.prot = prot;
-    mmap.flags = flags;
-    mmap.fd = f;
+
+    filedup(f);
+
     for (int i = 0; i < NOFILE; ++i) {
-        if (p->vma[i] == 0) {
-            p->vma[i] = &mmap;
+        if (p->vma[i].addr == 0) {
+            struct mmap *m = &p->vma[i];
+            m->addr = addr;
+            m->len = len;
+            m->prot = prot;
+            m->flags = flags;
+            m->fd = f;
+            m->offset = offset;
+            m->ref = 1;
             break;
         }
     }
     return addr;
 }
 
+int uvvmalloc(pagetable_t pagetable, int oldsz, uint64 newsz, int perm) {
+    uint64 a;
+
+    if (newsz < oldsz)
+        return oldsz;
+
+    oldsz = PGROUNDUP(oldsz);
+    for (a = oldsz; a < newsz; a += PGSIZE) {
+        if (mappages(pagetable, a, PGSIZE, 0, perm) != 0) {
+            uvmdealloc(pagetable, a, oldsz);
+            return 0;
+        }
+        pte_t *pte = walk(pagetable, a, 0);
+        *pte |= ~PTE_V;
+    }
+    return newsz;
+}
+
+int real_mmap(uint64 addr) {
+    printf("real_mmap:%p\n", addr);
+    struct proc *p = myproc();
+    if (addr > p->sz) {
+        printf("addr exceed\n");
+        return 0;
+    }
+    char *mem = kalloc();
+    if (mem == 0) {
+        panic("kalloc\n");
+    }
+    pte_t *pte = walk(p->pagetable, addr, 0);
+    *pte = PA2PTE(mem) | PTE_V | ~PTE_L;
+    printf("pte %p\n", *pte);
+
+    struct file *f = 0;
+    int offset = 0;
+    for (int i = 0; i < NOFILE; ++i) {
+        struct mmap *vma = &p->vma[i];
+        if (vma->ref > 0 && vma->addr >= addr && addr <= vma->addr + vma->len) {
+            f = vma->fd;
+            offset = vma->offset;
+            break;
+        }
+    }
+    if (f == 0) {
+        panic("not vaild vma");
+    }
+
+    int r = 0;
+    ilock(f->ip);
+    if ((r = readi(f->ip, 0, *pte, offset, PGSIZE)) != PGSIZE)
+        panic("readi");
+    iunlock(f->ip);
+    return 1;
+}
+
 uint64
 sys_munmap(void) {
+    uint64 addr;
+    int len;
+    argaddr(0, &addr);
+    argint(1, &len);
+
+    struct proc *p = myproc();
+    for (int i = 0; i < NOFILE; ++i) {
+        struct mmap *vma = &p->vma[i];
+        if (vma->ref > 0 && vma->addr >= addr && addr + len <= vma->addr + vma->len) {
+            vma->ref--;
+            uvmdealloc(p->pagetable, addr, addr + len);
+            break;
+        }
+    }
     return 0;
 }
