@@ -508,6 +508,9 @@ sys_mmap(void) {
 
 uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
     struct proc *p = myproc();
+//    if ((prot & PROT_WRITE) && f->writable == 0){
+//        return 0xffffffffffffffff;
+//    }
     // new addr
     int addr = p->sz;
     p->sz += len;
@@ -537,7 +540,6 @@ int real_mmap(uint64 addr) {
         return 0;
     }
     struct file *f = 0;
-    int offset = 0;
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
         if (vma->ref > 0 && vma->addr >= addr && addr <= (vma->addr + vma->len)) {
@@ -550,14 +552,19 @@ int real_mmap(uint64 addr) {
             if (vma->prot & PROT_WRITE) {
                 pte_perm |= PTE_W;
             }
-            if (uvmalloc(p->pagetable, addr, addr+vma->len, pte_perm) == 0){
+            if (uvmalloc(p->pagetable, addr, addr + vma->len, pte_perm) == 0) {
                 panic("vma uvvmalloc fail\n");
             }
+
             addr = PGROUNDUP(addr);
+            int off = vma->offset;
             ilock(f->ip);
-            for(uint64 a = addr; a < addr+vma->len; a += PGSIZE){
-                if ((readi(f->ip, 1, a, offset, PGSIZE)) != PGSIZE)
+            for (uint64 a = addr; a < addr + vma->len; a += PGSIZE) {
+                int r = 0;
+                if ((r = readi(f->ip, 1, a, off, PGSIZE)) < 0) {
                     panic("readi");
+                }
+                off += PGSIZE;
             }
             iunlock(f->ip);
             return 1;
