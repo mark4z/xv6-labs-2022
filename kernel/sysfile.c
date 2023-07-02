@@ -509,24 +509,11 @@ sys_mmap(void) {
 
 uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
     struct proc *p = myproc();
-
-    int pte_perm = PTE_U | PTE_L;
-    if (prot & PROT_READ) {
-        pte_perm |= PTE_R;
-    }
-    if (prot & PROT_WRITE) {
-        pte_perm |= PTE_W;
-    }
     // new addr
     int addr = p->sz;
     p->sz += len;
 
-    if (uvvmalloc(p->pagetable, addr, p->sz, pte_perm) < 0) {
-        return 0xffffffffffffffff;
-    }
-
     filedup(f);
-
     for (int i = 0; i < NOFILE; ++i) {
         if (p->vma[i].addr == 0) {
             struct mmap *m = &p->vma[i];
@@ -543,24 +530,6 @@ uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
     return addr;
 }
 
-int uvvmalloc(pagetable_t pagetable, int oldsz, uint64 newsz, int perm) {
-    uint64 a;
-
-    if (newsz < oldsz)
-        return oldsz;
-
-    oldsz = PGROUNDUP(oldsz);
-    for (a = oldsz; a < newsz; a += PGSIZE) {
-        if (mappages(pagetable, a, PGSIZE, 0, perm) != 0) {
-            uvmdealloc(pagetable, a, oldsz);
-            return 0;
-        }
-        pte_t *pte = walk(pagetable, a, 0);
-        *pte |= ~PTE_V;
-    }
-    return newsz;
-}
-
 int real_mmap(uint64 addr) {
     printf("real_mmap:%p\n", addr);
     struct proc *p = myproc();
@@ -568,41 +537,41 @@ int real_mmap(uint64 addr) {
         printf("addr exceed\n");
         return 0;
     }
-    char *mem = kalloc();
-    if (mem == 0) {
-        panic("kalloc\n");
-    }
-    pte_t *pte = walk(p->pagetable, addr, 0);
-    int flags = PTE_FLAGS(*pte) | PTE_V | ~PTE_L;
-    uvmunmap(p->pagetable, addr, 1, 0);
-    if (mappages(p->pagetable, addr, PGSIZE, (uint64) mem, flags) != 0) {
-        kfree(mem);
-        printf("mappages fail\n");
-        return 0;
-    }
-    uint64 pa = walkaddr(p->pagetable, addr);
-    printf("pte %p\n", pa);
-
     struct file *f = 0;
     int offset = 0;
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
-        if (vma->ref > 0 && vma->addr >= addr && addr <= vma->addr + vma->len) {
+        if (vma->ref > 0 && vma->addr >= addr && addr <= (vma->addr + vma->len)) {
             f = vma->fd;
-            offset = vma->offset;
-            break;
+
+            int pte_perm = PTE_U | PTE_L;
+            if (vma->prot & PROT_READ) {
+                pte_perm |= PTE_R;
+            }
+            if (vma->prot & PROT_WRITE) {
+                pte_perm |= PTE_W;
+            }
+
+            char *mem = kalloc();
+            if (mem == 0) {
+                panic("kalloc\n");
+            }
+            if (mappages(p->pagetable, addr, PGSIZE, (uint64) mem, pte_perm) != 0) {
+                kfree(mem);
+                printf("mappages fail\n");
+                return 0;
+            }
+            uint64 pa = walkaddr(p->pagetable, addr);
+            printf("pte %p\n", pa);
+            int r = 0;
+            ilock(f->ip);
+            if ((r = readi(f->ip, 0, pa, offset, PGSIZE)) != PGSIZE)
+                panic("readi");
+            iunlock(f->ip);
+            return 1;
         }
     }
-    if (f == 0) {
-        panic("not vaild vma");
-    }
-
-    int r = 0;
-    ilock(f->ip);
-    if ((r = readi(f->ip, 0, pa, offset, PGSIZE)) != PGSIZE)
-        panic("readi");
-    iunlock(f->ip);
-    return 1;
+    return 0;
 }
 
 uint64
@@ -617,7 +586,13 @@ sys_munmap(void) {
         struct mmap *vma = &p->vma[i];
         if (vma->ref > 0 && vma->addr >= addr && addr + len <= vma->addr + vma->len) {
             vma->ref--;
-            uvmdealloc(p->pagetable, addr, addr + len);
+            if (addr == vma->addr) {
+                vma->addr += len;
+            }
+            vma->len -= len;
+            if (vma->ref == 0) {
+                uvmdealloc(p->pagetable, addr, addr + len);
+            }
             break;
         }
     }
