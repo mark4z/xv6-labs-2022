@@ -292,7 +292,6 @@ create(char *path, short type, short major, short minor) {
 
 uint64 mmap();
 
-int uvvmalloc(pagetable_t pagetable, int oldsz, uint64 newsz, int perm);
 
 uint64
 sys_open(void) {
@@ -551,22 +550,15 @@ int real_mmap(uint64 addr) {
             if (vma->prot & PROT_WRITE) {
                 pte_perm |= PTE_W;
             }
-
-            char *mem = kalloc();
-            if (mem == 0) {
-                panic("kalloc\n");
+            if (uvmalloc(p->pagetable, addr, addr+vma->len, pte_perm) == 0){
+                panic("vma uvvmalloc fail\n");
             }
-            if (mappages(p->pagetable, addr, PGSIZE, (uint64) mem, pte_perm) != 0) {
-                kfree(mem);
-                printf("mappages fail\n");
-                return 0;
-            }
-            uint64 pa = walkaddr(p->pagetable, addr);
-            printf("pte %p\n", pa);
-            int r = 0;
+            addr = PGROUNDUP(addr);
             ilock(f->ip);
-            if ((r = readi(f->ip, 0, pa, offset, PGSIZE)) != PGSIZE)
-                panic("readi");
+            for(uint64 a = addr; a < addr+vma->len; a += PGSIZE){
+                if ((readi(f->ip, 1, a, offset, PGSIZE)) != PGSIZE)
+                    panic("readi");
+            }
             iunlock(f->ip);
             return 1;
         }
