@@ -508,9 +508,9 @@ sys_mmap(void) {
 
 uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
     struct proc *p = myproc();
-//    if ((prot & PROT_WRITE) && f->writable == 0){
-//        return 0xffffffffffffffff;
-//    }
+    if ((prot & PROT_WRITE) && (flags & MAP_SHARED) && f->writable == 0) {
+        return 0xffffffffffffffff;
+    }
     // new addr
     int addr = p->sz;
     p->sz += len;
@@ -533,7 +533,6 @@ uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
 }
 
 int real_mmap(uint64 addr) {
-    printf("real_mmap:%p\n", addr);
     struct proc *p = myproc();
     if (addr > p->sz) {
         printf("addr exceed\n");
@@ -584,15 +583,29 @@ sys_munmap(void) {
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
         if (vma->ref > 0 && vma->addr >= addr && addr + len <= vma->addr + vma->len) {
-            vma->ref--;
-            if (addr == vma->addr) {
-                vma->addr += len;
+            //write back
+            if (vma->flags & MAP_SHARED) {
+                int off = 0;
+                if (addr > vma->addr){
+                    off = vma->len - len;
+                }
+
+                begin_op();
+                ilock(vma->fd->ip);
+                if (writei(vma->fd->ip, 1, addr, off, len) < 0) {
+                    panic("write back fail\n");
+                }
+                iunlock(vma->fd->ip);
+                end_op();
             }
+            uvmunmap(p->pagetable, addr, len / PGSIZE, 1);
             vma->len -= len;
-            if (vma->ref == 0) {
-                uvmdealloc(p->pagetable, addr, addr + len);
+
+            if (len == 0) {
+                vma->ref = 0;
+                fileclose(vma->fd);
             }
-            break;
+            return 1;
         }
     }
     return 0;
