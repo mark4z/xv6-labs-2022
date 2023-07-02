@@ -258,20 +258,25 @@ fork_test(void) {
     if ((fd = open(f, O_RDONLY)) == -1)
         err("open");
     unlink(f);
+    printf("map p1\n");
     char *p1 = mmap(0, PGSIZE * 2, PROT_READ, MAP_SHARED, fd, 0);
     if (p1 == MAP_FAILED)
         err("mmap (4)");
+    printf("map p2\n");
     char *p2 = mmap(0, PGSIZE * 2, PROT_READ, MAP_SHARED, fd, 0);
     if (p2 == MAP_FAILED)
         err("mmap (5)");
 
+    printf("read just 2nd page\n");
     // read just 2nd page.
     if (*(p1 + PGSIZE) != 'A')
         err("fork mismatch (1)");
 
+    printf("fork\n");
     if ((pid = fork()) < 0)
         err("fork");
     if (pid == 0) {
+        printf("fork success\n");
         _v1(p1);
         munmap(p1, PGSIZE); // just the first page
         exit(0); // tell the parent that the mapping looks OK.

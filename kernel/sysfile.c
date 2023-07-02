@@ -511,14 +511,14 @@ uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
     if ((prot & PROT_WRITE) && (flags & MAP_SHARED) && f->writable == 0) {
         return 0xffffffffffffffff;
     }
-    // new addr
-    int addr = p->sz;
-    p->sz += len;
-
-    filedup(f);
     for (int i = 0; i < NOFILE; ++i) {
         if (p->vma[i].addr == 0) {
             struct mmap *m = &p->vma[i];
+            // new addr
+            int addr = p->sz;
+            p->sz += len;
+            filedup(f);
+
             m->addr = addr;
             m->len = len;
             m->prot = prot;
@@ -526,10 +526,10 @@ uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
             m->fd = f;
             m->offset = offset;
             m->ref = 1;
-            break;
+            return addr;
         }
     }
-    return addr;
+    return 0xffffffffffffffff;
 }
 
 int real_mmap(uint64 addr) {
@@ -586,7 +586,7 @@ sys_munmap(void) {
             //write back
             if (vma->flags & MAP_SHARED) {
                 int off = 0;
-                if (addr > vma->addr){
+                if (addr > vma->addr) {
                     off = vma->len - len;
                 }
 
@@ -598,12 +598,13 @@ sys_munmap(void) {
                 iunlock(vma->fd->ip);
                 end_op();
             }
-            uvmunmap(p->pagetable, addr, len / PGSIZE, 1);
+            uvmunmap(p->pagetable, PGROUNDUP(addr), len / PGSIZE, 1);
             vma->len -= len;
 
             if (len == 0) {
                 vma->ref = 0;
                 fileclose(vma->fd);
+                p->sz -= vma->len;
             }
             return 1;
         }
