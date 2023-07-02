@@ -54,6 +54,8 @@ void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, int, uint64, uint, uint);
 void            itrunc(struct inode*);
 int             real_mmap(uint64 addr);
+int             munmap(uint64 addr, int len);
+
 
 // ramdisk.c
 void            ramdiskinit(void);
