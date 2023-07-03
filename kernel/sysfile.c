@@ -515,6 +515,7 @@ uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
         if (p->vma[i].ref == 0) {
             struct mmap *m = &p->vma[i];
             // new addr
+            printf("mmap: %d %p %d\n", p->pid, p->sz, len);
             uint64 addr = p->sz;
             p->sz += len;
             filedup(f);
@@ -574,9 +575,10 @@ int real_mmap(uint64 addr) {
 int
 munmap(uint64 addr, int len) {
     struct proc *p = myproc();
+    printf("munmap: %d %p %d\n", p->pid, addr, len);
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
-        if (vma->ref > 0 && vma->addr <= addr && addr + len < vma->addr + vma->len) {
+        if (vma->ref > 0 && vma->addr <= addr && addr + len <= vma->addr + vma->len) {
             printf("munmap: %d %p %d %d %p %d\n", p->pid, addr, len, i, vma->addr, vma->len);
             //write back
             if (vma->flags & MAP_SHARED) {
@@ -592,16 +594,16 @@ munmap(uint64 addr, int len) {
                 iunlock(vma->fd->ip);
                 end_op();
             }
-            if ((walkaddr(p->pagetable, addr)) != 0) {
-                printf("munmap: %d %p %d\n", p->pid, PGROUNDUP(addr), len / PGSIZE);
-                uvmunmap(p->pagetable, PGROUNDUP(addr), len / PGSIZE, 1);
-                printf("munmap success: %d %p %d\n", p->pid, PGROUNDUP(addr), len / PGSIZE);
+            addr = PGROUNDUP(addr);
+            for (uint64 a = addr; a < addr + len; a += PGSIZE) {
+                if (walkaddr(p->pagetable, a) != 0) {
+                    printf("munmap: %d %p\n", p->pid, PGROUNDUP(a));
+                    uvmunmap(p->pagetable, a, 1, 1);
+                    printf("munmap success: %d %p\n", p->pid, PGROUNDUP(a));
+                    vma->ref--;
+                }
             }
-            if (addr == vma->addr) {
-                vma->addr += len;
-            }
-            vma->ref -= len / PGSIZE;
-            if (vma->ref == 0) {
+            if (addr == vma->addr && len == vma->len) {
                 fileclose(vma->fd);
                 vma->fd = 0;
                 p->sz -= vma->len;
