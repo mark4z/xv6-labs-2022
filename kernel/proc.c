@@ -151,8 +151,10 @@ freeproc(struct proc *p) {
     if (p->trapframe)
         kfree((void *) p->trapframe);
     p->trapframe = 0;
-    if (p->pagetable)
+    if (p->pagetable) {
+        printf("proc_freepagetable %d %p\n", p->pid, p->sz);
         proc_freepagetable(p->pagetable, p->sz);
+    }
     p->pagetable = 0;
     p->sz = 0;
     p->pid = 0;
@@ -162,14 +164,6 @@ freeproc(struct proc *p) {
     p->killed = 0;
     p->xstate = 0;
     p->state = UNUSED;
-
-    for (int i = 0; i < NOFILE; ++i) {
-        p->vma[i].ref = 0;
-        if (p->vma[i].fd > 0) {
-            fileclose(p->vma[i].fd);
-            p->vma[i].fd = 0;
-        }
-    }
 }
 
 // Create a user page table for a given process, with no user memory,
@@ -362,9 +356,9 @@ exit(int status) {
         }
     }
     // Close vma
-    for (int i = 0; i < NOFILE; ++i) {
+    for (int i = NOFILE - 1; i >= 0; i--) {
         if (p->vma[i].ref > 0) {
-            munmap(p->vma[i].addr, p->vma[i].ref * PGSIZE);
+            munmap(p->vma[i].addr, p->vma[i].len);
         }
     }
 

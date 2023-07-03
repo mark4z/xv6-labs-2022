@@ -283,7 +283,7 @@ fork_test(void) {
         printf("exit %p\n", p1);
         exit(0); // tell the parent that the mapping looks OK.
     }
-    printf("fork ?\n");
+    printf("fork ?: %d\n", getpid());
     int status = -1;
     wait(&status);
 
