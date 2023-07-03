@@ -512,10 +512,10 @@ uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
         return 0xffffffffffffffff;
     }
     for (int i = 0; i < NOFILE; ++i) {
-        if (p->vma[i].addr == 0) {
+        if (p->vma[i].ref == 0) {
             struct mmap *m = &p->vma[i];
             // new addr
-            int addr = p->sz;
+            uint64 addr = p->sz;
             p->sz += len;
             filedup(f);
 
@@ -542,7 +542,7 @@ int real_mmap(uint64 addr) {
     struct file *f = 0;
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
-        if (vma->ref > 0 && vma->addr >= addr && addr <= (vma->addr + vma->len)) {
+        if (vma->ref > 0 && vma->addr <= addr && addr <= (vma->addr + vma->len)) {
             f = vma->fd;
 
             int pte_perm = PTE_U | PTE_L;
@@ -574,7 +574,7 @@ int real_mmap(uint64 addr) {
 }
 
 int
-munmap(uint64 addr, int len){
+munmap(uint64 addr, int len) {
     struct proc *p = myproc();
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
@@ -600,6 +600,7 @@ munmap(uint64 addr, int len){
             if (len == 0) {
                 vma->ref = 0;
                 fileclose(vma->fd);
+                vma->fd = 0;
                 p->sz -= vma->len;
             }
             return 1;
