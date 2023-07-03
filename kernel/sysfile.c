@@ -525,7 +525,7 @@ uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
             m->flags = flags;
             m->fd = f;
             m->offset = offset;
-            m->ref = 1;
+            m->ref = len / PGSIZE;
             return addr;
         }
     }
@@ -533,7 +533,6 @@ uint64 mmap(int len, int prot, int flags, struct file *f, int offset) {
 }
 
 int real_mmap(uint64 addr) {
-    printf("real_mmap: %p\n", addr);
     struct proc *p = myproc();
     if (addr > p->sz) {
         printf("addr exceed\n");
@@ -552,6 +551,7 @@ int real_mmap(uint64 addr) {
             if (vma->prot & PROT_WRITE) {
                 pte_perm |= PTE_W;
             }
+            printf("real_mmap:%d %p %d\n", p->pid, vma->addr, vma->len);
             if (uvmalloc(p->pagetable, vma->addr, vma->addr + vma->len, pte_perm) == 0) {
                 panic("vma uvvmalloc fail\n");
             }
@@ -559,7 +559,7 @@ int real_mmap(uint64 addr) {
             addr = PGROUNDUP(addr);
             int off = vma->offset;
             ilock(f->ip);
-                int r = 0;
+            int r = 0;
             if ((r = readi(f->ip, 1, vma->addr, off, vma->len)) < 0) {
                 printf("%d\n", r);
                 panic("readi");
@@ -576,14 +576,14 @@ munmap(uint64 addr, int len) {
     struct proc *p = myproc();
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
-        if (vma->ref > 0 && vma->addr >= addr && addr + len <= vma->addr + vma->len) {
+        if (vma->ref > 0 && vma->addr <= addr && addr + len < vma->addr + vma->len) {
+            printf("munmap: %d %p %d %d %p %d\n", p->pid, addr, len, i, vma->addr, vma->len);
             //write back
             if (vma->flags & MAP_SHARED) {
                 int off = 0;
                 if (addr > vma->addr) {
                     off = vma->len - len;
                 }
-
                 begin_op();
                 ilock(vma->fd->ip);
                 if (writei(vma->fd->ip, 1, addr, off, len) < 0) {
@@ -592,11 +592,16 @@ munmap(uint64 addr, int len) {
                 iunlock(vma->fd->ip);
                 end_op();
             }
-            uvmunmap(p->pagetable, PGROUNDUP(addr), len / PGSIZE, 1);
-            vma->len -= len;
-
-            if (len == 0) {
-                vma->ref = 0;
+            if ((walkaddr(p->pagetable, addr)) != 0) {
+                printf("munmap: %d %p %d\n", p->pid, PGROUNDUP(addr), len / PGSIZE);
+                uvmunmap(p->pagetable, PGROUNDUP(addr), len / PGSIZE, 1);
+                printf("munmap success: %d %p %d\n", p->pid, PGROUNDUP(addr), len / PGSIZE);
+            }
+            if (addr == vma->addr) {
+                vma->addr += len;
+            }
+            vma->ref -= len / PGSIZE;
+            if (vma->ref == 0) {
                 fileclose(vma->fd);
                 vma->fd = 0;
                 p->sz -= vma->len;

@@ -162,8 +162,13 @@ freeproc(struct proc *p) {
     p->killed = 0;
     p->xstate = 0;
     p->state = UNUSED;
+
     for (int i = 0; i < NOFILE; ++i) {
         p->vma[i].ref = 0;
+        if (p->vma[i].fd > 0) {
+            fileclose(p->vma[i].fd);
+            p->vma[i].fd = 0;
+        }
     }
 }
 
@@ -359,7 +364,7 @@ exit(int status) {
     // Close vma
     for (int i = 0; i < NOFILE; ++i) {
         if (p->vma[i].ref > 0) {
-            munmap(p->vma[i].addr, p->vma[i].len);
+            munmap(p->vma[i].addr, p->vma[i].ref * PGSIZE);
         }
     }
 

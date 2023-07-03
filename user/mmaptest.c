@@ -280,6 +280,7 @@ fork_test(void) {
         printf("munmap\n");
         munmap(p1, PGSIZE); // just the first page
         printf("munmap sub success\n");
+        printf("exit %p\n", p1);
         exit(0); // tell the parent that the mapping looks OK.
     }
     printf("fork ?\n");
