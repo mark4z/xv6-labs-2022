@@ -542,7 +542,7 @@ int real_mmap(uint64 addr) {
     struct file *f = 0;
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
-        if (vma->ref > 0 && vma->addr <= addr && addr <= (vma->addr + vma->len)) {
+        if (vma->ref > 0 && vma->addr <= addr && addr < (vma->addr + vma->len)) {
             f = vma->fd;
 
             int pte_perm = PTE_U | PTE_L;
@@ -559,12 +559,10 @@ int real_mmap(uint64 addr) {
             addr = PGROUNDUP(addr);
             int off = vma->offset;
             ilock(f->ip);
-            for (uint64 a = addr; a < addr + vma->len; a += PGSIZE) {
                 int r = 0;
-                if ((r = readi(f->ip, 1, a, off, PGSIZE)) < 0) {
-                    panic("readi");
-                }
-                off += PGSIZE;
+            if ((r = readi(f->ip, 1, vma->addr, off, vma->len)) < 0) {
+                printf("%d\n", r);
+                panic("readi");
             }
             iunlock(f->ip);
             return 1;
