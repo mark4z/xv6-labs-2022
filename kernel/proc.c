@@ -152,7 +152,6 @@ freeproc(struct proc *p) {
         kfree((void *) p->trapframe);
     p->trapframe = 0;
     if (p->pagetable) {
-        printf("proc_freepagetable %d %p\n", p->pid, p->sz);
         proc_freepagetable(p->pagetable, p->sz);
     }
     p->pagetable = 0;
@@ -357,9 +356,7 @@ exit(int status) {
     }
     // Close vma
     for (int i = NOFILE - 1; i >= 0; i--) {
-        if (p->vma[i].ref > 0) {
-            munmap(p->vma[i].addr, p->vma[i].len);
-        }
+        munmap(p->vma[i].addr, p->vma[i].len);
     }
 
     begin_op();

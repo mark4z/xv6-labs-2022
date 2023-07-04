@@ -575,11 +575,9 @@ int real_mmap(uint64 addr) {
 int
 munmap(uint64 addr, int len) {
     struct proc *p = myproc();
-    printf("munmap: %d %p %d\n", p->pid, addr, len);
     for (int i = 0; i < NOFILE; ++i) {
         struct mmap *vma = &p->vma[i];
         if (vma->ref > 0 && vma->addr <= addr && addr + len <= vma->addr + vma->len) {
-            printf("munmap: %d %p %d %d %p %d\n", p->pid, addr, len, i, vma->addr, vma->len);
             //write back
             if (vma->flags & MAP_SHARED) {
                 int off = 0;
@@ -594,19 +592,14 @@ munmap(uint64 addr, int len) {
                 iunlock(vma->fd->ip);
                 end_op();
             }
-            addr = PGROUNDUP(addr);
-            for (uint64 a = addr; a < addr + len; a += PGSIZE) {
-                if (walkaddr(p->pagetable, a) != 0) {
-                    printf("munmap: %d %p\n", p->pid, PGROUNDUP(a));
-                    uvmunmap(p->pagetable, a, 1, 1);
-                    printf("munmap success: %d %p\n", p->pid, PGROUNDUP(a));
-                    vma->ref--;
-                }
-            }
-            if (addr == vma->addr && len == vma->len) {
+            vma->ref -= len / PGSIZE;
+            if (vma->ref <= 0) {
                 fileclose(vma->fd);
                 vma->fd = 0;
-                p->sz -= vma->len;
+            }
+            addr = PGROUNDUP(addr);
+            for (uint64 a = addr; a < addr + len; a += PGSIZE) {
+                uvmunmap(p->pagetable, a, 1, 1);
             }
             return 1;
         }
