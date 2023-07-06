@@ -124,8 +124,8 @@ e1000_transmit(struct mbuf *m) {
 
     tx_mbufs[tail] = m;
 
-    uint32 new_tail = (tail + 1) % TX_RING_SIZE;
-    regs[E1000_TDT] = new_tail;
+    __sync_synchronize();
+    regs[E1000_TDT] =  (tail + 1) % TX_RING_SIZE;
     release(&e1000_lock);
     return 0;
 }
