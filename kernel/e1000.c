@@ -145,7 +145,7 @@ e1000_recv(void) {
         if (!(rx->status & E1000_RXD_STAT_DD)) {
             return;
         }
-
+        __sync_synchronize();
         struct mbuf *m = rx_mbufs[tail];
         m->len = rx->length;
         net_rx(m);
@@ -154,6 +154,7 @@ e1000_recv(void) {
         rx->addr = (uint64)empty_m->head;
         rx->status = 0;
         rx_mbufs[tail] = empty_m;
+        __sync_synchronize();
         regs[E1000_RDT] = tail;
     }
 }
